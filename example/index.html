@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Loop test</title>
+    <style>
+        #canvas {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+<p>
+    <button onclick="start()">Start</button>
+    <button onclick="stop()">Stop</button>
+</p>
+<canvas id="canvas"></canvas>
+</body>
+<script src="../src/AnimationLoop.js"></script>
+<script>
+  let isStarted = false;
+  /* Create the square object */
+  const square = {
+    width: 200,
+    position: { x: 0, y: 400 },
+    speed: 100,
+    direction: 1
+  };
+  /* Create the canvas */
+  const canvas = document.getElementById('canvas');
+  canvas.width = 800;
+  canvas.height = 600;
+  const context = canvas.getContext('2d');
+  context.clearRect(0, 0, canvas.width, canvas.height);
+  context.fillStyle = "black";
+  context.fillRect(square.position.x, square.position.y, square.width, square.width);
+
+  /* Create the animation loop */
+  const animationLoop = new AnimationLoop((elapsed) => {
+    square.position.x += square.direction * square.speed * elapsed;
+    if (square.position.x >= canvas.width - square.width || square.position.x <= 0) {
+      square.direction *= -1;
+    }
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    context.fillStyle = "black";
+    context.fillRect(square.position.x, square.position.y, square.width, square.width);
+  });
+
+  function start() {
+    if (!isStarted) {
+      animationLoop.start();
+      isStarted = true;
+    }
+  }
+
+  function stop() {
+    if (isStarted) {
+      animationLoop.stop();
+      isStarted = false;
+    }
+  }
+</script>
+</html>
